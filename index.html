@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"/>
+	<title>Kumo Café | Đặt đồ uống trực tuyến ở Biên Hòa</title>
+	<link href="img/logo-cafe-fav.png" rel="shortcut icon" />
+	<link rel='stylesheet' id='style-css'  href='css/style.css' type='text/css' media='all' />
+	<script type='text/javascript' src='js/jquery-1.9.1.min.js'></script>
+	<script src="js/firebase-4.8.1.min.js"></script>
+	<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCR1LY5HwC2CSeoSFf7-TCtNaFEFVCTXrc"></script>-->
+	<script type='text/javascript' src='js/main.js'></script>
+	<script>
+		/* script external */
+	</script>
+	<script>
+	jQuery(document).ready(function($){
+		var products = {};
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyBv1ya363gty-4YYtra9pUMVGXMwReFUNg",
+			authDomain: "kumocf-app.firebaseapp.com",
+			databaseURL: "https://kumocf-app.firebaseio.com",
+			projectId: "kumocf-app",
+			storageBucket: "",
+			messagingSenderId: "272938561254"
+		};
+		firebase.initializeApp(config);
+		
+		var db = firebase.database();
+		
+		/*var _p = {};
+		_p[2406] = {name : "Trà sữa Houjicha","regularprice" : 16000,"saleprice" : 16000,"addons" : 0,"img" : "22046523_1664705796928255_5075345805737856147_n-300x300.jpg"};
+		_p[3037] = {name : "Trà xanh đậu đỏ","regularprice" : 39000,"saleprice" : 39000,"addons" : 0,"img" : "tra-xanh-dau-do-300x300.png"};
+		_p[2459] = {"name" : "Trà đẹp","regularprice" : 38000,"saleprice" : 38000,"addons" : 0,"img" : "05-tra-dep-600x600-300x300.jpg"};
+		_p[2885] = {"name" : "Tiramisu","regularprice" : 25000,"saleprice" : 25000,"addons" : 0,"img" : "tiramisu-300x300.jpg"};
+		_p[3120] = {"name" : "New Cappuccino Z!","regularprice" : 32000,"saleprice" : 32000,"addons" : 0,"img" : "NS_0354-300x300.jpg"};
+		_p[3054] = {"name" : "Trà sữa Uptown","regularprice" : 18000,"saleprice" : 18000,"addons" : 0,"img" : "20708387_892044960951431_8697834690294102830_n-300x300.jpg"};
+		_p[4039] = {"name" : "Trà sen","regularprice" : 35000,"saleprice" : 35000,"addons" : 0,"img" : "village_tra_sen-300x300.jpg"};
+		_p[3730] = {"name" : "Trà sữa Zentea","regularprice" : 20000,"saleprice" : 20000,"addons" : 0,"img" : "tra-sua-2-300x300.jpg"};
+		_p[3406] = {"name" : "Trà sữa Molicha","regularprice" : 18000,"saleprice" : 18000,"addons" : 0,"img" : "tra-sua-moli-300x300.jpg"};
+		_p[3280] = {"name" : "Trà xanh Nhật kem phô mai","regularprice" : 29000,"saleprice" : 29000,"addons" : 0,"img" : "matcha-300x300.jpg"};
+		_p[2933] = {"name" : "White coffee mouse","regularprice" : 16000,"saleprice" : 16000,"addons" : 0,"img" : "White-coffe-mouse-300x300.jpg"};
+		_p[2585] = {"name" : "Cà phê sữa","regularprice" : 25000,"saleprice" : 25000,"addons" : 0,"img" : "20171020_171428-300x300.jpg"};
+
+		db.ref("products/").set(
+			_p
+		);*/
+		/*
+		var _s = {};
+		_s[01] = {name: "Arobi", address: "Đường Phan Trung", feeservice: 0, opentime: 8, closetime: 16, img: "11947435_889285777824208_7934237962476917435_n.jpg"};
+		_s[02] = {name: "Dè Cube", address: "2041 Nguyễn Ái Quốc, Tp.Biên Hòa", feeservice: 1, opentime: 8, closetime: 16, img: "21032359_1177333099077690_7240056086425834766_n.jpg"};
+		_s[03] = {name: "Gemini food & beverage", address: "1109 Phạm Văn Thuận, KP 1, P. Tân Mai", feeservice: 2, opentime: 8, closetime: 16, img: "23131225_811629689019363_428593579_o.jpg"};
+		_s[04] = {name: "Molicha", address: "45/223 Phạm Văn Thuận, P. Tân Mai, BH", feeservice: 3, opentime: 8, closetime: 16, img: "22894446_2095630550654843_5635732686289347050_n.jpg"};
+		_s[05] = {name: "Mr. Good Tea", address: "Lô 7, kp 7, đường Phan Trung", feeservice: 4, opentime: 8, closetime: 16, img: "mrgoodtea1.jpg"};
+		_s[06] = {name: "Paris Cake", address: "356E/5 Phan Trung, P.Tân Tiến", feeservice: 5, opentime: 8, closetime: 16, img: "22405684_1506710739384375_3071203406957635763_n.jpg"};
+		_s[07] = {name: "Sun Tea", address: "8/4, KP.10, P.Tân Biên, TP.Biên Hoà", feeservice: 6, opentime: 8, closetime: 16, img: "21752188_768904516648429_5675387581410334408_n.jpg"};
+		_s[08] = {name: "The Village", address: "6 Lê Quý Đôn, p.Tân Hiệp, tp.Biên Hòa", feeservice: 7, opentime: 8, closetime: 16, img: "25498059_885376021641492_362107985861930686_n.jpg"};
+		_s[09] = {name: "Uji Tea", address: "301 Đường 30/4,KP4, P Quyết Thắng", feeservice: 8, opentime: 8, closetime: 16, img: "matcha-300x300.jpg"};
+		_s[10] = {name: "Uptown Tea", address: "218 Phan Trung", feeservice: 9, opentime: 8, closetime: 16, img: "20264633_881322035357057_8004006949076143026_n.jpg"};
+		
+		db.ref("stores/").set(
+			_s
+		);
+		*/
+		db.ref('/products/').once('value').then(function(snapshot){
+			var _noibat = $(".section.noibat .nb-scroll");
+			var _product = "";
+			_noibat.html("");
+			snapshot.forEach(function(obj){
+				_product = "";
+				products[obj.key] = obj.val();
+				_product += "<div class='nb-item nb-" + obj.key + "'>";
+					_product += "<div class='click_evt' action='product' id='" + obj.key + "'>";
+						_product += "<div class='nb-img'><img src='https://www.kumocf.com/wp-content/uploads/" + obj.val().img +"' alt='Ảnh đại diện sản phẩm' /></div>";
+						_product += "<div class='nb-content'>";
+							_product += "<div class='nb-price'>" + obj.val().saleprice + "</div>";
+							_product += "<div class='nb-title'>" + obj.val().name + "</div>";
+						_product += "</div>";
+					_product += "</div>";
+				_product += "</div>";
+				
+				_noibat.append(_product);
+			});
+		}).then(function(){
+			kumo_load_stores();
+		});
+		
+		function kumo_load_stores(){
+			db.ref('/stores/').once('value').then(function(snapshot){
+				var _storewrap = $(".section.cuahang .ch-wrap");
+				var _store = "";
+				_storewrap.html("");
+				snapshot.forEach(function(obj){
+					_store = "";
+					_store += "<div class='ch-item ch-" + obj.key + "'>";
+						_store += "<div class='click_evt' action='store' id='" + obj.key + "'>";
+							_store += "<div class='ch-img'><img src='https://www.kumocf.com/wp-content/uploads/" + obj.val().img +"' data-rel='external'></div>";
+							_store += "<div class='ch-content'>";
+								_store += "<div class='ch-title'>" + obj.val().name + "</div>";
+								_store += "<div class='ch-address'>" + obj.val().address + "</div>";
+								_store += "<div class='ch-info'>";
+									_store += "<span class='feeservice' value='" + obj.val().feeservice + "'></span>";
+									_store += "<span class='status' value='1'></span>";
+								_store += "</div>";
+							_store += "</div>";
+						_store += "</div>";
+					_store += "</div>";
+					
+					_storewrap.append(_store);
+				});
+			}).then(function(){
+				$(".nb-price").each(function(){
+					if( !$(this).hasClass("rewrite") ){
+						var _total = parseInt($(this).text()).toString();
+						$(this).text( _total.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+						$(this).addClass("rewrite");
+					}
+				});
+				$(".loading").animate({
+					opacity: 0
+				}, 500, function(){
+					$(this).remove();
+				});
+			});
+		}
+		
+		
+	});
+	</script>
+</head>
+<body>
+	<div class="loading">
+		<div class="loader"></div>
+	</div>
+	<div id="pagewrap">
+		<div id="header">
+			<div class="headerwrap ">
+				<div class="congcu">
+					<div class="timkiem">
+						<input type="text" placeholder="Tìm kiếm"/>
+					</div>
+					<div class="giohang">
+						<a href="#" item="0" target="_blank">
+							Giỏ hàng
+						</a>
+					</div>
+					<div class="hotro">
+						<a href="#">
+							Hỗ trợ
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="slide">
+			<div class="slide-scroll">
+				<div class="slide-item slide-1">
+					<a href="https://kumocf.com" target="_blank"><img src="img/slide.jpg"></a>
+				</div>
+				<div class="slide-item slide-2">
+					<a href="#"><img src="img/slide.jpg"></a>
+				</div>
+				<div class="slide-item slide-3">
+					<a href="#"><img src="img/slide.jpg"></a>
+				</div>
+			</div>
+		</div>
+		<div id="body">
+			<div class="bodywrap ">
+				<!-- TAG -->
+				<div class="section tag">
+					<div class="section-title">
+						Tìm kiếm phổ biến
+					</div>
+					<div class="tag-wrap">
+						<div class="tag-scroll">
+							<div class="tag-item tag-1"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-2"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-3"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-4"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-5"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-6"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-7"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-8"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-9"><a href="#"><img src="img/tag.jpg"></a></div>
+							<div class="tag-item tag-10"><a href="#"><img src="img/tag.jpg"></a></div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- NOI BAT -->
+				<div class="section noibat">
+					<div class="section-title">
+						Nổi  bật
+					</div>
+					<div class="nb-wrap">
+						<div class="nb-scroll">
+							<div class="nb-item nb-1">
+								<a href="#">
+									<div class="nb-img">
+										<img src="img/sp-150x150.jpg">
+									</div>
+									<div class="nb-content">
+										<div class="nb-title">
+											Trà sữa 1
+										</div>
+										<div class="nb-price">16.000</div>
+									</div>
+								</a>
+							</div>
+							<div class="nb-item nb-2">
+								<a href="#">
+									<div class="nb-img">
+										<img src="img/sp-150x150.jpg">
+									</div>
+									<div class="nb-content">
+										<div class="nb-title">
+											Trà đào
+										</div>
+										<div class="nb-price">18.000</div>
+									</div>
+								</a>
+							</div>
+							<div class="nb-item nb-3">
+								<a href="#">
+									<div class="nb-img">
+										<img src="img/sp-150x150.jpg">
+									</div>
+									<div class="nb-content">
+										<div class="nb-title">
+											Yogurt
+										</div>
+										<div class="nb-price">18.000</div>
+									</div>
+								</a>
+							</div>
+							<div class="nb-item nb-4">
+								<a href="#">
+									<div class="nb-img">
+										<img src="img/sp-150x150.jpg">
+									</div>
+									<div class="nb-content">
+										<div class="nb-title">
+											Macchiato
+										</div>
+										<div class="nb-price">35.000</div>
+									</div>
+								</a>
+							</div>
+							<div class="nb-item nb-5">
+								<a href="#">
+									<div class="nb-img">
+										<img src="img/sp-150x150.jpg">
+									</div>
+									<div class="nb-content">
+										<div class="nb-title">
+											Cà phê sữa
+										</div>
+										<div class="nb-price">15.000</div>
+									</div>
+								</a>
+							</div>
+							<div class="nb-item nb-6">
+								<a href="#">
+									<div class="nb-img">
+										<img src="img/sp-150x150.jpg">
+									</div>
+									<div class="nb-content">
+										<div class="nb-title">
+											Trà Detox
+										</div>
+										<div class="nb-price">30.000</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+				<!-- CUA HANG -->
+				<div class="section cuahang">
+					<div class="section-title">
+						Cửa hàng
+					</div>
+					<div class="ch-wrap">
+						<div class="ch-item ch-1">
+							<a href="#">
+								<div class="ch-img"><img src="img/cuahang.jpg"></div>
+								<div class="ch-content">
+									<div class="ch-title">Cửa hàng 1</div>
+									<div class="ch-address">Số 001, ABC, Biên Hòa, ĐN</div>
+									<div class="ch-info">
+										<span class="feeservice" value="0"></span>
+										<span class="status" value="1"></span>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div class="ch-item ch-2">
+							<a href="#">
+								<div class="ch-img"><img src="img/cuahang.jpg"></div>
+								<div class="ch-content">
+									<div class="ch-title">Cửa hàng 2</div>
+									<div class="ch-address">Số 002, ABC, Biên Hòa, ĐN</div>
+									<div class="ch-info">
+										<span class="feeservice" value="10"></span>
+										<span class="status" value="0"></span>
+									</div>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer">
+			<div class="footerwrap ">
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>
